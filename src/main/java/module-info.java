@@ -11,6 +11,6 @@ module fr.esgi.javalousvegous {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens fr.esgi.javalousvegous to javafx.fxml;
-    exports fr.esgi.javalousvegous;
+    opens fr.esgi.lousvegous to javafx.fxml;
+    exports fr.esgi.lousvegous;
 }
