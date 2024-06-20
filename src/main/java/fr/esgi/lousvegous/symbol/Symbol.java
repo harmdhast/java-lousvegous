@@ -1,4 +1,4 @@
-package fr.esgi.lousvegous;
+package fr.esgi.lousvegous.symbol;
 
 public class Symbol {
     private final String id;
