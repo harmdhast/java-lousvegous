@@ -10,6 +10,7 @@ module fr.esgi.javalousvegous {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.desktop;
 
     opens fr.esgi.lousvegous to javafx.fxml;
     exports fr.esgi.lousvegous;
