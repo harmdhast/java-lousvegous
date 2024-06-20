@@ -13,4 +13,6 @@ module fr.esgi.javalousvegous {
 
     opens fr.esgi.lousvegous to javafx.fxml;
     exports fr.esgi.lousvegous;
+    exports fr.esgi.lousvegous.symbol;
+    opens fr.esgi.lousvegous.symbol to javafx.fxml;
 }

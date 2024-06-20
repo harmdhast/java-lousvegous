@@ -1,5 +1,6 @@
 package fr.esgi.lousvegous;
 
+import fr.esgi.lousvegous.symbol.SymbolManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,11 +11,10 @@ import java.util.Objects;
 
 public class HelloApplication extends Application {
     public static void main(String[] args) {
-        Main main = new Main();
-        main.defineSymbols();
+        //SymbolManager symbolManager = new SymbolManager();
 
-        Random random = new Random();
-//        for (int i = 0; i < 1000; i++) {
+//        Random random = new Random();
+//        for (int i = 0; i < 20; i++) {
 //            System.out.print(random.getRandomSymbol().getImage());
 //        }
 
