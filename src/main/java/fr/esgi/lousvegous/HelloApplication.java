@@ -3,11 +3,13 @@ package fr.esgi.lousvegous;
 import com.almasb.fxgl.app.CursorInfo;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
-import com.almasb.fxgl.app.scene.IntroScene;
 import com.almasb.fxgl.app.scene.SceneFactory;
-import com.almasb.fxgl.dsl.FXGL;
-import fr.esgi.lousvegous.ui.MyIntroScene;
+import fr.esgi.lousvegous.ui.intro.IntroScene;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
 public class HelloApplication extends GameApplication {
     public static void main(String[] args) {
@@ -34,7 +36,8 @@ public class HelloApplication extends GameApplication {
 
     @Override
     protected void initGame() {
-        var image = FXGL.getAssetLoader().loadTexture("test.jpg");
+        // Load stylesheet
+        getGameScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("lousvegous.css")).toExternalForm());
     }
 
     @Override
@@ -45,14 +48,14 @@ public class HelloApplication extends GameApplication {
         gameSettings.setVersion("0.1");
         gameSettings.setIntroEnabled(false);
 
-        CursorInfo cursorInfo = new CursorInfo("dollar.gif",0, 0);
+        CursorInfo cursorInfo = new CursorInfo("dollar.gif", 0, 0);
         gameSettings.setDefaultCursor(cursorInfo);
         gameSettings.setIntroEnabled(true);
         gameSettings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
-            public IntroScene newIntro() {
-                return new MyIntroScene();
+            public com.almasb.fxgl.app.scene.IntroScene newIntro() {
+                return new IntroScene();
             }
         });
     }
