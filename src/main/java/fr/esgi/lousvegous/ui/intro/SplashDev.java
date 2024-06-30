@@ -1,6 +1,7 @@
 package fr.esgi.lousvegous.ui.intro;
 
 import com.almasb.fxgl.animation.Animation;
+import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -9,38 +10,63 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplashDev {
-    private List<Animation<?>> animations = new ArrayList<>();
+public class SplashDev implements Splash {
+    private final List<Animation<?>> animations = new ArrayList<>();
+    private final Pane splashDev = new Pane();
 
     SplashDev() {
-        StackPane vBox1 = new StackPane();
-        vBox1.setPrefSize(FXGL.getAppWidth(), FXGL.getAppHeight());
-        vBox1.setAlignment(Pos.CENTER);
+        StackPane container = new StackPane();
+        container.setPrefSize(FXGL.getAppWidth(), FXGL.getAppHeight());
+        container.setAlignment(Pos.CENTER);
 
-        Label label4 = new Label("Twenty-Seven Club");
-        label4.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/Sunday Chillin.ttf"), 80));
-        label4.setStyle("-fx-text-fill: linear-gradient(to right, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 100%);");
-        label4.setScaleX(1.5);
+        Label devName = new Label("Twenty-Seven Club");
+        devName.setFont(Font.font("Sunday Chillin", 80));
+        devName.setStyle("-fx-text-fill: linear-gradient(to right, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 100%);");
+        devName.setScaleX(1.5);
 
-        Label label5 = new Label("A GAME BY");
-        label5.setStyle("-fx-text-fill: white");
-        label5.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/LEMONMILK-Bold.otf"), 20));
-        label5.setTranslateY(-40);
-        label5.setTranslateX(-220.0);
+        Label aGameBy = new Label("A GAME BY");
+        aGameBy.setStyle("-fx-text-fill: white");
+        aGameBy.setFont(Font.font("LEMON MILK Bold", 20));
+        aGameBy.setTranslateY(-40);
+        aGameBy.setTranslateX(-220.0);
 
-        Rectangle rectangle = new Rectangle(800, 400);
-        rectangle.setFill(Color.BLACK);
+        Rectangle hider = new Rectangle(800, 400);
+        hider.setFill(Color.BLACK);
 
-        vBox1.getChildren().addAll(label5, label4);
+        container.getChildren().addAll(aGameBy, devName);
 
-        Pane splashDev = new Pane();
-        splashDev.getChildren().addAll(
-                vBox1,
-                rectangle
+        this.splashDev.getChildren().addAll(
+                container,
+                hider
         );
+
+        animations.add(FXGL.animationBuilder()
+                .duration(Duration.seconds(3))
+                .interpolator(Interpolators.LINEAR.EASE_OUT())
+                .animate(hider.xProperty())
+                .from(0)
+                .to(800)
+                .build());
+
+        animations.add(FXGL.animationBuilder()
+                .duration(Duration.seconds(0))
+                .interpolator(Interpolators.LINEAR.EASE_OUT())
+                .delay(Duration.seconds(5))
+                .animate(hider.yProperty())
+                .build());
+        FXGL.play("27club.mp3");
+    }
+
+    public Pane getPane() {
+        return this.splashDev;
+    }
+
+    public List<Animation<?>> getAnimations() {
+        return this.animations;
     }
 }

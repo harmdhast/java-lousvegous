@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import fr.esgi.lousvegous.ui.intro.IntroScene;
+import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -19,7 +20,10 @@ public class HelloApplication extends GameApplication {
         //  for (int i = 0; i < 20; i++) {
         //      System.out.print(random.getRandomSymbol().getImage());
         //  }
-
+        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/LEMONMILK-Bold.otf"), 10);
+        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/Sunday Chillin.ttf"), 10);
+        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/LasVegasDemo.otf"), 10);
+        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/CasinoShadow-Italic.ttf"), 10);
 
         launch(args);
     }
@@ -37,7 +41,6 @@ public class HelloApplication extends GameApplication {
     @Override
     protected void initGame() {
         // Load stylesheet
-        getGameScene().getStylesheets().add(Objects.requireNonNull(getClass().getResource("lousvegous.css")).toExternalForm());
     }
 
     @Override
