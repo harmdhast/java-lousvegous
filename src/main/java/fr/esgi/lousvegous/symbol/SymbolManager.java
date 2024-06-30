@@ -9,7 +9,7 @@ public class SymbolManager {
     private static float totalWeight;
 
     private SymbolManager() {
-        addSymbol(new Symbol("s1", (float) 1 / 16, "joker", new float[]{4, 10, 20}));
+        addSymbol(new S1());
         addSymbol(new Symbol("s2", (float) 1 / 12, "kiwi", new float[]{1.6f, 6, 10}));
         addSymbol(new Symbol("s3", (float) 1 / 8, "strawberry", new float[]{1, 4, 6}));
         addSymbol(new Symbol("s4", (float) 1 / 6, "watermelon", new float[]{.6f, 3, 5}));

@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 import java.util.Objects;
 
-public class Symbol {
+abstract class Symbol {
     private final String id;
     private final float chance;
     private final float[] multipliers;
