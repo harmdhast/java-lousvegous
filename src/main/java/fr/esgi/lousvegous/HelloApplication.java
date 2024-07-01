@@ -4,19 +4,21 @@ import com.almasb.fxgl.app.CursorInfo;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
+import fr.esgi.lousvegous.symbol.SymbolManager;
 import fr.esgi.lousvegous.ui.intro.IntroScene;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
 public class HelloApplication extends GameApplication {
-    Rectangle[] rectangles = new Rectangle[15];
+    ImageView[] grid = new ImageView[15];
 
     public static void main(String[] args) {
         //  SymbolManager symbolManager = new SymbolManager();
@@ -53,22 +55,29 @@ public class HelloApplication extends GameApplication {
         GridPane playingGrid = new GridPane();
         playingGrid.getStyleClass().add("playing-grid");
         playingGrid.setGridLinesVisible(true);
-        playingGrid.setPrefSize(400, 400);
+        playingGrid.setPrefSize(300, 500);
+        playingGrid.setPadding(new Insets(10, 10, 10, 10));
+        // set columns and rows to be the same size
+        // Center items in grid
+        playingGrid.setAlignment(javafx.geometry.Pos.CENTER);
+
 
         // Define the size of the grid
         int numColumns = 5;
         int numRows = 3;
 
         // Create the cells of the grid
+        int idx = 0;
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
-                Rectangle rect = new Rectangle(60, 60); // adjust size as needed
-                rectangles[i * numColumns + j] = rect;
-                rect.setStroke(Color.BLACK); // grid line color
-                rect.setFill(Color.WHITE); // cell color
+                ImageView imageView = new ImageView();
+                Image image = SymbolManager.getInstance().getRandomSymbol().getImage();
+                imageView.setImage(image);
+                grid[idx] = imageView;
 
                 // Add the rectangle (cell) to the grid
-                playingGrid.add(rect, i, j);
+                playingGrid.add(imageView, i, j);
+                idx++;
             }
         }
 
@@ -76,12 +85,21 @@ public class HelloApplication extends GameApplication {
         Button button = new Button("Randomize");
         button.setOnAction(e -> changeColorOnClick());
 
+        // Create a container that fills the screen
+
+
         // Create Vbox
         VBox vbox = new VBox();
+        vbox.setPrefSize(800, 600);
+        vbox.setSnapToPixel(true);
+
         vbox.getChildren().add(playingGrid);
         vbox.getChildren().add(button);
         vbox.setSpacing(10);
-
+        vbox.setAlignment(javafx.geometry.Pos.CENTER);
+        // center the grid
+        vbox.setPadding(new Insets(10, 10, 10, 10));
+        vbox.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
 
         // Add the grid to the game's root (or another parent node)
         getGameScene().getRoot().getChildren().add(vbox);
@@ -89,13 +107,8 @@ public class HelloApplication extends GameApplication {
     }
 
     public void changeColorOnClick() {
-        for (Rectangle rectangle : rectangles) {
-            int red = (int) (Math.random() * 256);
-            int green = (int) (Math.random() * 256);
-            int blue = (int) (Math.random() * 256);
-            Color randomColor = Color.rgb(red, green, blue);
-            // Set the fill color of the rectangle to the random color
-            rectangle.setFill(randomColor);
+        for (ImageView imageView : grid) {
+            imageView.setImage(SymbolManager.getInstance().getRandomSymbol().getImage());
         }
     }
 
@@ -106,9 +119,7 @@ public class HelloApplication extends GameApplication {
         gameSettings.setTitle("LousVegous");
         gameSettings.setVersion("0.1");
         gameSettings.setIntroEnabled(false);
-
         gameSettings.setDefaultCursor(new CursorInfo("dollar.gif", 0, 0));
-        gameSettings.setIntroEnabled(false);
         gameSettings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
@@ -116,9 +127,5 @@ public class HelloApplication extends GameApplication {
                 return new IntroScene();
             }
         });
-
-
     }
-
-
 }
