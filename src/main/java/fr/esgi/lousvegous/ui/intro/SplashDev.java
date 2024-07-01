@@ -59,7 +59,7 @@ public class SplashDev implements Splash {
                 .delay(Duration.seconds(5))
                 .animate(hider.yProperty())
                 .build());
-        FXGL.play("27club.mp3");
+        FXGL.play("sm64_mario_falling.wav");
     }
 
     public Pane getPane() {
