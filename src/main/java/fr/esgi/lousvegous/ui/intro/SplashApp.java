@@ -11,7 +11,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -22,8 +25,8 @@ import java.util.List;
 
 public class SplashApp implements Splash {
 
-    private final List<Animation<?>> animations = new ArrayList<>();
     private static final int SIZE = 250;
+    private final List<Animation<?>> animations = new ArrayList<>();
     private final Pane splashApp = new Pane();
 
     SplashApp() {
@@ -96,6 +99,23 @@ public class SplashApp implements Splash {
                 hBox,
                 vBox
         );
+
+        FXGL.play("coins.mp3");
+        FXGL.play("casino-ambiance.mp3");
+    }
+
+    private void stopAllSounds() {
+        double volume = FXGL.getSettings().getGlobalMusicVolume();
+        FXGL.animationBuilder()
+                .duration(Duration.seconds(1))
+                .onFinished(() -> {
+                    FXGL.getAudioPlayer().stopAllSoundsAndMusic();
+                    FXGL.getSettings().setGlobalMusicVolume(volume);
+                })
+                .animate(FXGL.getSettings().globalMusicVolumeProperty())
+                .from(FXGL.getSettings().getGlobalMusicVolume())
+                .to(0.0)
+                .buildAndPlay();
     }
 
     public Pane createDisplayableUnit(char letter) {
@@ -118,15 +138,19 @@ public class SplashApp implements Splash {
         text.setFont(Font.font("Arial", FontWeight.BOLD, 40));
         text.setEffect(dropShadow);
 
-        animations.add(FXGL.animationBuilder()
+        Animation<Number> anim = FXGL.animationBuilder()
                 .duration(Duration.seconds(1))
-                        .repeat(10)
+                .repeat(10)
                 .autoReverse(true)
                 .interpolator(Interpolators.PERLIN.EASE_OUT())
                 .animate(dropShadow.radiusProperty())
                 .from(2.0)
                 .to(10.0)
-                .build());
+                .build();
+
+        anim.setOnFinished(this::stopAllSounds);
+
+        animations.add(anim);
 
         text.setFill(Color.ORANGERED);
 
