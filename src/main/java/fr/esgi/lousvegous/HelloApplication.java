@@ -5,14 +5,19 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import fr.esgi.lousvegous.ui.intro.IntroScene;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
 public class HelloApplication extends GameApplication {
+    Rectangle[] rectangles = new Rectangle[15];
+
     public static void main(String[] args) {
         //  SymbolManager symbolManager = new SymbolManager();
 
@@ -40,7 +45,58 @@ public class HelloApplication extends GameApplication {
 
     @Override
     protected void initGame() {
-        // Load stylesheet
+        // Create a rectangle background
+        Background bg = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
+        getGameScene().getRoot().setBackground(bg);
+
+        // Create a new GridPane
+        GridPane playingGrid = new GridPane();
+        playingGrid.getStyleClass().add("playing-grid");
+        playingGrid.setGridLinesVisible(true);
+        playingGrid.setPrefSize(400, 400);
+
+        // Define the size of the grid
+        int numColumns = 5;
+        int numRows = 3;
+
+        // Create the cells of the grid
+        for (int i = 0; i < numColumns; i++) {
+            for (int j = 0; j < numRows; j++) {
+                Rectangle rect = new Rectangle(60, 60); // adjust size as needed
+                rectangles[i * numColumns + j] = rect;
+                rect.setStroke(Color.BLACK); // grid line color
+                rect.setFill(Color.WHITE); // cell color
+
+                // Add the rectangle (cell) to the grid
+                playingGrid.add(rect, i, j);
+            }
+        }
+
+        // Create button
+        Button button = new Button("Randomize");
+        button.setOnAction(e -> changeColorOnClick());
+
+        // Create Vbox
+        VBox vbox = new VBox();
+        vbox.getChildren().add(playingGrid);
+        vbox.getChildren().add(button);
+        vbox.setSpacing(10);
+
+
+        // Add the grid to the game's root (or another parent node)
+        getGameScene().getRoot().getChildren().add(vbox);
+
+    }
+
+    public void changeColorOnClick() {
+        for (Rectangle rectangle : rectangles) {
+            int red = (int) (Math.random() * 256);
+            int green = (int) (Math.random() * 256);
+            int blue = (int) (Math.random() * 256);
+            Color randomColor = Color.rgb(red, green, blue);
+            // Set the fill color of the rectangle to the random color
+            rectangle.setFill(randomColor);
+        }
     }
 
     @Override
@@ -51,9 +107,8 @@ public class HelloApplication extends GameApplication {
         gameSettings.setVersion("0.1");
         gameSettings.setIntroEnabled(false);
 
-        CursorInfo cursorInfo = new CursorInfo("dollar.gif", 0, 0);
-        gameSettings.setDefaultCursor(cursorInfo);
-        gameSettings.setIntroEnabled(true);
+        gameSettings.setDefaultCursor(new CursorInfo("dollar.gif", 0, 0));
+        gameSettings.setIntroEnabled(false);
         gameSettings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
@@ -61,6 +116,8 @@ public class HelloApplication extends GameApplication {
                 return new IntroScene();
             }
         });
+
+
     }
 
 

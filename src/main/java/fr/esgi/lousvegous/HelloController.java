@@ -1,10 +1,7 @@
 package fr.esgi.lousvegous;
 
-import fr.esgi.lousvegous.symbol.SymbolManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 public class HelloController {
@@ -19,9 +16,9 @@ public class HelloController {
         for (int i = 0; i < playingGrid.getColumnCount(); i++) {
             for (int j = 0; j < playingGrid.getRowCount(); j++) {
                 // Create image from resources
-                Image image = SymbolManager.getInstance().getRandomSymbol().getImage();
-                ImageView imageView = new ImageView(image);
-                playingGrid.add(imageView, i, j);
+                // Image image = SymbolManager.getInstance().getRandomSymbol().getImage();
+                //ImageView imageView = new ImageView(image);
+                //playingGrid.add(imageView, i, j);
             }
         }
         playingGrid.add(new Label(""), 0, 0);
