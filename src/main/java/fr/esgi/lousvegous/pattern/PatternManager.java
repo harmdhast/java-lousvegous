@@ -1,9 +1,6 @@
 package fr.esgi.lousvegous.pattern;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.SequencedCollection;
 
 public class PatternManager {
     public static List<Pattern> patterns = List.of(
@@ -33,6 +30,7 @@ public class PatternManager {
             new Pattern("100 001 100 001 100"), // -_-_-
             new Pattern("001 100 001 100 001")  // reverse -_-_-
     );
+    private static PatternManager instance = null;
 
     public static void main(String[] args) {
         for (Pattern pattern : patterns) {
@@ -41,8 +39,11 @@ public class PatternManager {
         }
     }
 
-//    public void addPattern(Pattern pattern) {
-//        patterns.add(pattern);
-//    }
+    public static PatternManager getInstance() {
+        if (instance == null) {
+            instance = new PatternManager();
+        }
+        return instance;
+    }
 
 }
