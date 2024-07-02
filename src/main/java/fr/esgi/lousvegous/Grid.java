@@ -53,9 +53,19 @@ public class Grid {
         List<Pattern> matchs = new ArrayList<>();
 
         for (Pattern pattern : PatternManager.patterns) {
+
             if ((pattern.getBinary() & binary) == pattern.getBinary()) {
                 System.out.println("Match: " + pattern.getPattern());
                 matchs.add(pattern);
+                continue;
+            } else if ((pattern.fourColumns() & binary) == pattern.fourColumns()) {
+                System.out.println("Match 4 cols: " + pattern.getPattern());
+                matchs.add(pattern.asFourColumns());
+                continue;
+            } else if ((pattern.threeColumns() & binary) == pattern.threeColumns()) {
+                System.out.println("Match 3 cols: " + pattern.getPattern());
+                matchs.add(pattern.asThreeColumns());
+                continue;
             }
         }
 

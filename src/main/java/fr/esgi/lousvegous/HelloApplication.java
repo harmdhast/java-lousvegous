@@ -133,54 +133,94 @@ public class HelloApplication extends GameApplication {
     }
 
     public void spin(ActionEvent e) {
-        Button source = (Button) e.getSource();
-        source.setDisable(true);
+        Button button = (Button) e.getSource();
+        button.setDisable(true);
         int idx = 0;
+        Symbol[] test = new Symbol[15];
+        test[0] = SymbolManager.getInstance().getSymbols().get(1);
+        test[1] = SymbolManager.getInstance().getSymbols().get(2);
+        test[2] = SymbolManager.getInstance().getSymbols().get(8);
+        test[3] = test[0];
+        test[4] = SymbolManager.getInstance().getSymbols().get(2);
+        test[5] = SymbolManager.getInstance().getSymbols().get(8);
+        test[6] = test[0];
+        test[7] = SymbolManager.getInstance().getSymbols().get(2);
+        test[8] = SymbolManager.getInstance().getSymbols().get(8);
+        test[9] = test[0];
+        test[10] = SymbolManager.getInstance().getSymbols().get(8);
+        test[11] = SymbolManager.getInstance().getSymbols().get(8);
+        test[12] = test[0];
+        test[13] = SymbolManager.getInstance().getSymbols().get(7);
+        test[14] = SymbolManager.getInstance().getSymbols().get(7);
+
+        int i = 0;
         for (ImageView imageView : displayGrid) {
-            Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+            // Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+            Symbol symbol = test[i];
             imageView.setImage(symbol.getImage());
             grid.setGridSymbol(idx, symbol);
             idx++;
+            i++;
         }
 
-        //List<Animation<?>> animations = new ArrayList<>();
-        HashMap<Symbol, Pattern[]> matches = grid.getAllMatches();
-        for (Symbol symbol : matches.keySet()) {
-            double delay = 0;
-            for (Pattern pattern : matches.get(symbol)) {
-                //DropShadow dropShadow = new DropShadow(20, Color.GREEN);
 
-                double finalDelay = delay;
-                pattern.getIndexes().forEach(i -> {
-                    //displayGrid[i].setEffect(dropShadow);
-                    Animation animation = FXGL.animationBuilder().duration(Duration.seconds(1))
-                            .delay(Duration.seconds(finalDelay))
-                            .autoReverse(true)
-                            .interpolator(Interpolators.LINEAR.EASE_OUT())
-                            .animate(displayGrid[i].rotateProperty())
-                            .from(0.0)
-                            .to(360.0)
-                            .build();
-                    animations.add(animation);
-                });
-                //wait for 1 second
-                //displayGrid[i].setEffect(new javafx.scene.effect.DropShadow(20, Color.GREEN))
-                // pattern.getIndexes().forEach(i -> displayGrid[i].setEffect(null));
-                delay += 1;
-                // System.out.println("Matched " + symbol + " with pattern " + pattern);
-            }
+        processLoop(button);
+    }
 
-        }
+    public void processLoop(Button button) {
+        int toDestroy = processPatterns();
+        startAnimations(button, toDestroy);
+    }
 
+    private void startAnimations(Button button, int toDestroy) {
         if (animations.isEmpty()) {
-            source.setDisable(false);
+            button.setDisable(false);
         } else {
             animations.forEach(Animation::start);
             animations.getLast().setOnFinished(() -> {
                 animations = new ArrayList<>();
-                source.setDisable(false);
+                replaceSymbols(toDestroy);
+                processLoop(button);
             });
         }
+    }
+
+    private void replaceSymbols(int toDestroy) {
+        System.out.println(toDestroy);
+        System.out.println(Pattern.decimalToBinary(toDestroy));
+        System.out.println(Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy)));
+        Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy)).forEach(i -> {
+            Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+            displayGrid[i].setImage(symbol.getImage());
+            grid.setGridSymbol(i, symbol);
+        });
+    }
+
+    private void addAnimationToIndex(int index, double delay) {
+        Animation animation = FXGL.animationBuilder().duration(Duration.seconds(1))
+                .delay(Duration.seconds(delay))
+                .autoReverse(true)
+                .interpolator(Interpolators.LINEAR.EASE_OUT())
+                .animate(displayGrid[index].rotateProperty())
+                .from(0.0)
+                .to(360.0)
+                .build();
+        animations.add(animation);
+    }
+
+    private int processPatterns() {
+        HashMap<Symbol, Pattern[]> matches = grid.getAllMatches();
+        int toDestroy = 0;
+        double delay = 0;
+        for (Symbol symbol : matches.keySet()) {
+            for (Pattern pattern : matches.get(symbol)) {
+                toDestroy = toDestroy | pattern.getBinary();
+                double finalDelay = delay;
+                pattern.getIndexes().forEach(i -> addAnimationToIndex(i, finalDelay));
+                delay += 1;
+            }
+        }
+        return toDestroy;
     }
 
     @Override
