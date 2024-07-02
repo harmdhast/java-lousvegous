@@ -13,7 +13,7 @@ abstract public class Symbol {
     public Symbol(String id, float chance, String image, float[] multipliers) {
         this.id = id;
         this.chance = chance;
-        this.image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/symbols/" + image + ".png")), 50, 50, true, true);
+        this.image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/symbols/" + image + ".png")), 100, 100, true, true);
         this.multipliers = multipliers;
     }
 
@@ -28,5 +28,9 @@ abstract public class Symbol {
     public Image getImage(int width, int height) {
         this.image = new Image(image.getUrl(), width, height, true, true);
         return image;
+    }
+
+    public String getId() {
+        return id;
     }
 }

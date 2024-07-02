@@ -1,24 +1,37 @@
 package fr.esgi.lousvegous;
 
+import com.almasb.fxgl.animation.Animation;
+import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.app.CursorInfo;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
+import com.almasb.fxgl.dsl.FXGL;
+import fr.esgi.lousvegous.pattern.Pattern;
+import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
 import fr.esgi.lousvegous.ui.intro.IntroScene;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
 public class HelloApplication extends GameApplication {
-    ImageView[] grid = new ImageView[15];
+    ImageView[] displayGrid = new ImageView[15];
+    Grid grid = Grid.getInstance();
+    List<Animation<?>> animations = new ArrayList<>();
 
     public static void main(String[] args) {
         //  SymbolManager symbolManager = new SymbolManager();
@@ -71,9 +84,9 @@ public class HelloApplication extends GameApplication {
         for (int i = 0; i < numColumns; i++) {
             for (int j = 0; j < numRows; j++) {
                 ImageView imageView = new ImageView();
-                Image image = SymbolManager.getInstance().getRandomSymbol().getImage();
-                imageView.setImage(image);
-                grid[idx] = imageView;
+                //Image image = SymbolManager.getInstance().getRandomSymbol().getImage();
+                //imageView.setImage(image);
+                displayGrid[idx] = imageView;
 
                 // Add the rectangle (cell) to the grid
                 playingGrid.add(imageView, i, j);
@@ -82,23 +95,31 @@ public class HelloApplication extends GameApplication {
         }
 
         // Create button
-        Button button = new Button("Randomize");
-        button.setOnAction(e -> changeColorOnClick());
-
-        // Create a container that fills the screen
-
+        Button button = new Button("SPIN");
+        button.setPrefWidth(100);
+        button.setPrefHeight(50);
+        button.setStyle("-fx-font-size: 20px;");
+        button.setOnAction(e -> spin(e));
 
         // Create Vbox
         VBox vbox = new VBox();
         vbox.setPrefSize(800, 600);
         vbox.setSnapToPixel(true);
 
-        vbox.getChildren().add(playingGrid);
-        vbox.getChildren().add(button);
-        vbox.setSpacing(10);
+        // Create Hbox
+        HBox hbox = new HBox();
+        hbox.setAlignment(javafx.geometry.Pos.CENTER);
+        hbox.getChildren().add(playingGrid);
+        hbox.getChildren().add(button);
+
+        Text text = new Text("LousVegous");
+        text.setFont(Font.font("Casino Shadow", 100));
+        text.setFill(Color.YELLOW);
+
+
+        vbox.getChildren().addAll(text, hbox);
         vbox.setAlignment(javafx.geometry.Pos.CENTER);
         // center the grid
-        vbox.setPadding(new Insets(10, 10, 10, 10));
         vbox.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
 
         // Add the grid to the game's root (or another parent node)
@@ -106,9 +127,59 @@ public class HelloApplication extends GameApplication {
 
     }
 
-    public void changeColorOnClick() {
-        for (ImageView imageView : grid) {
-            imageView.setImage(SymbolManager.getInstance().getRandomSymbol().getImage());
+    @Override
+    protected void onUpdate(double tpf) {
+        animations.forEach(a -> a.onUpdate(tpf));
+    }
+
+    public void spin(ActionEvent e) {
+        Button source = (Button) e.getSource();
+        source.setDisable(true);
+        int idx = 0;
+        for (ImageView imageView : displayGrid) {
+            Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+            imageView.setImage(symbol.getImage());
+            grid.setGridSymbol(idx, symbol);
+            idx++;
+        }
+
+        //List<Animation<?>> animations = new ArrayList<>();
+        HashMap<Symbol, Pattern[]> matches = grid.getAllMatches();
+        for (Symbol symbol : matches.keySet()) {
+            double delay = 0;
+            for (Pattern pattern : matches.get(symbol)) {
+                //DropShadow dropShadow = new DropShadow(20, Color.GREEN);
+
+                double finalDelay = delay;
+                pattern.getIndexes().forEach(i -> {
+                    //displayGrid[i].setEffect(dropShadow);
+                    Animation animation = FXGL.animationBuilder().duration(Duration.seconds(1))
+                            .delay(Duration.seconds(finalDelay))
+                            .autoReverse(true)
+                            .interpolator(Interpolators.LINEAR.EASE_OUT())
+                            .animate(displayGrid[i].rotateProperty())
+                            .from(0.0)
+                            .to(360.0)
+                            .build();
+                    animations.add(animation);
+                });
+                //wait for 1 second
+                //displayGrid[i].setEffect(new javafx.scene.effect.DropShadow(20, Color.GREEN))
+                // pattern.getIndexes().forEach(i -> displayGrid[i].setEffect(null));
+                delay += 1;
+                // System.out.println("Matched " + symbol + " with pattern " + pattern);
+            }
+
+        }
+
+        if (animations.isEmpty()) {
+            source.setDisable(false);
+        } else {
+            animations.forEach(Animation::start);
+            animations.getLast().setOnFinished(() -> {
+                animations = new ArrayList<>();
+                source.setDisable(false);
+            });
         }
     }
 
