@@ -7,6 +7,7 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
+import fr.esgi.lousvegous.login.LoginView;
 import fr.esgi.lousvegous.pattern.Pattern;
 import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
@@ -63,6 +64,13 @@ public class HelloApplication extends GameApplication {
         // Create a rectangle background
         Background bg = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
         getGameScene().getRoot().setBackground(bg);
+
+        boolean debugLogin = true;
+        if (debugLogin) {
+            getGameScene().getRoot().getChildren().add(LoginView.getView());
+            return;
+        }
+
 
         // Create a new GridPane
         GridPane playingGrid = new GridPane();
@@ -209,17 +217,16 @@ public class HelloApplication extends GameApplication {
     }
 
     private int processPatterns() {
-        HashMap<Symbol, Pattern[]> matches = grid.getAllMatches();
+        HashMap<Pattern, Symbol> matches = grid.getAllMatches();
         int toDestroy = 0;
         double delay = 0;
-        for (Symbol symbol : matches.keySet()) {
-            for (Pattern pattern : matches.get(symbol)) {
-                toDestroy = toDestroy | pattern.getBinary();
-                double finalDelay = delay;
-                pattern.getIndexes().forEach(i -> addAnimationToIndex(i, finalDelay));
-                delay += 1;
-            }
+        for (Pattern pattern : matches.keySet()) {
+            toDestroy = toDestroy | pattern.getBinary();
+            double finalDelay = delay;
+            pattern.getIndexOfOnes().forEach(i -> addAnimationToIndex(i, finalDelay));
+            delay += 1;
         }
+
         return toDestroy;
     }
 

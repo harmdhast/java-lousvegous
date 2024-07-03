@@ -6,9 +6,7 @@ import fr.esgi.lousvegous.symbol.S1;
 import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class Grid {
@@ -27,52 +25,48 @@ public class Grid {
         grid[index] = symbol;
     }
 
-    public HashMap<Symbol, Pattern[]> getAllMatches() {
-        if (hasNull()) {
+    public HashMap<Pattern, Symbol> getAllMatches() {
+        if (hasNullSymbol()) {
             return null;
         }
 
-        HashMap<Symbol, Pattern[]> matches = new HashMap<>();
-        for (Symbol symbol : SymbolManager.getInstance().getSymbols()) {
-            //System.out.printf("Checking for symbol %s\n", symbol.getId());
-            Pattern[] patterns = getMatchesForSymbol(symbol);
-            //System.out.printf("Found %d matches\n", patterns.length);
-            if (patterns.length > 0) {
-                matches.put(symbol, patterns);
+        HashMap<Pattern, Symbol> matches = new HashMap<>();
+        for (Pattern pattern : PatternManager.patterns) {
+            Pattern p = new Pattern(pattern);
+            Symbol found = getMatchingSymbol(p);
+            if (found != null) {
+                matches.put(p, found);
             }
         }
         return matches;
     }
 
-    public Pattern[] getMatchesForSymbol(Symbol symbol) {
-        if (hasNull()) {
+    public Symbol getMatchingSymbol(Pattern pattern) {
+        if (hasNullSymbol()) {
             return null;
         }
 
-        int binary = gridToBinary(symbol);
-        List<Pattern> matchs = new ArrayList<>();
-
-        for (Pattern pattern : PatternManager.patterns) {
-
+        for (Symbol symbol : SymbolManager.getInstance().getSymbols()) {
+            int binary = getBinaryStringForSymbol(symbol);
+            //System.out.println("Binary: " + binary + " for symbol: " + symbol.getId() + " and pattern: " + pattern.getPattern());
             if ((pattern.getBinary() & binary) == pattern.getBinary()) {
-                System.out.println("Match: " + pattern.getPattern());
-                matchs.add(pattern);
-                continue;
+                System.out.println("Found match: " + symbol.getId() + " for pattern: " + pattern.getName());
+                return symbol;
             } else if ((pattern.fourColumns() & binary) == pattern.fourColumns()) {
-                System.out.println("Match 4 cols: " + pattern.getPattern());
-                matchs.add(pattern.asFourColumns());
-                continue;
+                pattern.setMode(1);
+                System.out.println("Found match 4 columns: " + symbol.getId() + " for pattern: " + pattern.getName());
+                return symbol;
             } else if ((pattern.threeColumns() & binary) == pattern.threeColumns()) {
-                System.out.println("Match 3 cols: " + pattern.getPattern());
-                matchs.add(pattern.asThreeColumns());
-                continue;
+                pattern.setMode(2);
+                System.out.println("Found match 3 columns: " + symbol.getId() + " for pattern: " + pattern.getName());
+                return symbol;
             }
         }
 
-        return matchs.toArray(new Pattern[0]);
+        return null;
     }
 
-    public int gridToBinary(Symbol symbol) {
+    public int getBinaryStringForSymbol(Symbol symbol) {
         StringBuilder binary = new StringBuilder();
         for (Symbol s : grid) {
             if (Objects.equals(s.getId(), symbol.getId()) || Objects.equals(s.getId(), wild.getId())) {
@@ -84,7 +78,7 @@ public class Grid {
         return Integer.parseInt(binary.toString(), 2);
     }
 
-    public boolean hasNull() {
+    public boolean hasNullSymbol() {
         for (Symbol s : grid) {
             if (s == null) {
                 return true;
