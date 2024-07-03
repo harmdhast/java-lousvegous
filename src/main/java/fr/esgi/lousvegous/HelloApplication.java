@@ -69,7 +69,7 @@ public class HelloApplication extends GameApplication {
         Background bg = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
         getGameScene().getRoot().setBackground(bg);
 
-        boolean debugLogin = true;
+        boolean debugLogin = false;
         if (debugLogin) {
             Login login = new Login();
 

@@ -20,7 +20,6 @@ public class SymbolManager {
         addSymbol(new S7());
         addSymbol(new S8());
         addSymbol(new S9());
-
     }
 
     public static SymbolManager getInstance() {

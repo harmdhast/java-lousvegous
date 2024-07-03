@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class LoginView {
+public class RegisterView {
     public static Node getView() {
         System.out.println("Login view");
 
