@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="fr.esgi.lousvegous.login.Login">
@@ -10,7 +9,12 @@
             <children>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                     <children>
-                        <Pane prefHeight="200.0" prefWidth="200.0"/>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                            <children>
+                                <TextField layoutX="278.0" layoutY="110.0" promptText="TEST"/>
+                                <Button layoutX="189.0" layoutY="110.0" mnemonicParsing="false" text="Button"/>
+                            </children>
+                        </Pane>
                         <Label text="Label"/>
                     </children>
                 </VBox>

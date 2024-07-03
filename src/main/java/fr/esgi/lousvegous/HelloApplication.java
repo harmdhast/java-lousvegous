@@ -7,8 +7,10 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
+import fr.esgi.lousvegous.login.Login;
 import fr.esgi.lousvegous.login.LoginView;
 import fr.esgi.lousvegous.pattern.Pattern;
+import fr.esgi.lousvegous.player.Player;
 import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
 import fr.esgi.lousvegous.ui.intro.IntroScene;
@@ -23,9 +25,11 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
@@ -67,6 +71,14 @@ public class HelloApplication extends GameApplication {
 
         boolean debugLogin = true;
         if (debugLogin) {
+            Login login = new Login();
+
+            login.login("test", "test");
+            login.register("admin", "admin");
+            Player admin = login.login("admin", "admin");
+
+            System.out.println(admin.getUsername());
+
             getGameScene().getRoot().getChildren().add(LoginView.getView());
             return;
         }
@@ -245,5 +257,16 @@ public class HelloApplication extends GameApplication {
                 return new IntroScene();
             }
         });
+    }
+
+    @Override
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("username", "");
+        vars.put("last_login", LocalDateTime.now());
+        vars.put("balance", 0);
+        vars.put("total_rolls", 0);
+        vars.put("total_wins", 0);
+        vars.put("best_win", 0);
+        vars.put("time_played", 0);
     }
 }

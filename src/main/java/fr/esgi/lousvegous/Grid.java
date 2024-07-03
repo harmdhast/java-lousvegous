@@ -2,9 +2,9 @@ package fr.esgi.lousvegous;
 
 import fr.esgi.lousvegous.pattern.Pattern;
 import fr.esgi.lousvegous.pattern.PatternManager;
-import fr.esgi.lousvegous.symbol.S1;
 import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
+import fr.esgi.lousvegous.symbol.list.S1;
 
 import java.util.HashMap;
 import java.util.Objects;

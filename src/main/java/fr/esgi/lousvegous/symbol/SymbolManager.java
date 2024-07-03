@@ -1,5 +1,7 @@
 package fr.esgi.lousvegous.symbol;
 
+import fr.esgi.lousvegous.symbol.list.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
