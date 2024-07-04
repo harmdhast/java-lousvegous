@@ -23,12 +23,11 @@ public class Login {
     }
 
     public static Player register(String username, String password) {
-        username = withPrefix(username);
-        if (Profiles.hasProperty(username)) {
+        if (Profiles.hasProperty(withPrefix(username))) {
             System.out.println("Username already exists");
             return null;
         } else {
-            Profiles.setProperty(username, password);
+            Profiles.setProperty(withPrefix(username), password);
             System.out.println("Registration successful for " + username);
             return new Player(username);
         }

@@ -7,7 +7,7 @@ import java.util.Objects;
 abstract public class Symbol {
     private final String id;
     private final float chance;
-    private final float[] multipliers;
+    private float[] multipliers;
     private Image image;
 
     public Symbol(String id, float chance, String image, float[] multipliers) {
@@ -15,6 +15,14 @@ abstract public class Symbol {
         this.chance = chance;
         this.image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/symbols/" + image + ".png")), 100, 100, true, true);
         this.multipliers = multipliers;
+    }
+
+    public float[] getMultipliers() {
+        return multipliers;
+    }
+
+    public float getMultiplier(int idx) {
+        return multipliers[idx];
     }
 
     public float getChance() {

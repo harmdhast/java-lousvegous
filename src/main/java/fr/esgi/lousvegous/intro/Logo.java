@@ -34,6 +34,8 @@ public class Logo {
         bg.setStroke(Color.web("#ffb703"));
         bg.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
         bg.setStrokeWidth(15.0);
+
+        // Clipping rectangle to the desired bounds
         DropShadow dropShadow1 = new DropShadow(100, Color.CYAN);
         bg.setEffect(dropShadow1);
 
@@ -73,7 +75,7 @@ public class Logo {
 
         // Create a vertical box that fill the whole screen and center its content
         var vBox = new StackPane();
-        //vBox.setPrefSize(250, 200);
+        // vBox.setPrefSize(250, 200);
         vBox.setAlignment(javafx.geometry.Pos.CENTER);
         vBox.getChildren().addAll(hBox, vBox2);
         //vBox.setSpacing(25);
@@ -81,10 +83,11 @@ public class Logo {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(bg, vBox);
 
-        Pane pane = new Pane();
+        StackPane pane = new StackPane();
         pane.getChildren().addAll(stackPane);
         pane.setScaleX(scale);
         pane.setScaleY(scale);
+        pane.setAlignment(Pos.TOP_CENTER);
         return pane;
     }
 

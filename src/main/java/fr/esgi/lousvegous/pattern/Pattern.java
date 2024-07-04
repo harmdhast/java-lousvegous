@@ -1,5 +1,7 @@
 package fr.esgi.lousvegous.pattern;
 
+import fr.esgi.lousvegous.symbol.Symbol;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,5 +94,13 @@ public class Pattern {
 
     public String getName() {
         return name;
+    }
+
+    public float getMultiplier(Symbol symbol) {
+        return switch (mode) {
+            case 1 -> symbol.getMultiplier(1);
+            case 2 -> symbol.getMultiplier(0);
+            default -> symbol.getMultiplier(2);
+        };
     }
 }

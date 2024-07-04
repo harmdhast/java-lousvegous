@@ -4,6 +4,7 @@ import fr.esgi.lousvegous.symbol.list.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SymbolManager {
     public static List<Symbol> symbols = new ArrayList<>();
@@ -55,6 +56,20 @@ public class SymbolManager {
     public Symbol getRandomSymbol() {
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < symbols.size() - 1; ++idx) {
+            r -= symbols.get(idx).getChance();
+            if (r <= 0) {
+                break;
+            }
+        }
+        return symbols.get(idx);
+    }
+
+    // Random symbol with seed
+    public Symbol getRandomSymbol(long seed) {
+        Random random = new Random(seed);
+        double r = random.nextDouble() * totalWeight;
+        int idx = 0;
+        for (; idx < symbols.size() - 1; ++idx) {
             r -= symbols.get(idx).getChance();
             if (r <= 0) {
                 break;
