@@ -1,4 +1,4 @@
-package fr.esgi.lousvegous.ui.intro;
+package fr.esgi.lousvegous.intro;
 
 import com.almasb.fxgl.animation.Animation;
 import com.almasb.fxgl.animation.Interpolators;

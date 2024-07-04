@@ -4,15 +4,15 @@ import fr.esgi.lousvegous.player.Player;
 
 public class Login {
 
-    private boolean checkPassword(String username, String password) {
+    private static boolean checkPassword(String username, String password) {
         return Profiles.getProperty(username).equals(password);
     }
 
-    private String withPrefix(String username) {
+    private static String withPrefix(String username) {
         return "user." + username;
     }
 
-    public Player login(String username, String password) {
+    public static Player login(String username, String password) {
         if (Profiles.hasProperty(withPrefix(username)) && checkPassword(withPrefix(username), password)) {
             System.out.println("Login successful for " + username);
             return new Player(username);
@@ -22,15 +22,15 @@ public class Login {
         }
     }
 
-    public boolean register(String username, String password) {
+    public static Player register(String username, String password) {
         username = withPrefix(username);
         if (Profiles.hasProperty(username)) {
             System.out.println("Username already exists");
-            return false;
+            return null;
         } else {
             Profiles.setProperty(username, password);
             System.out.println("Registration successful for " + username);
-            return true;
+            return new Player(username);
         }
     }
 }

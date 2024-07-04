@@ -1,10 +1,11 @@
-package fr.esgi.lousvegous;
+package fr.esgi.lousvegous.grid;
 
 import fr.esgi.lousvegous.pattern.Pattern;
 import fr.esgi.lousvegous.pattern.PatternManager;
 import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
 import fr.esgi.lousvegous.symbol.list.S1;
+import javafx.scene.image.ImageView;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -12,7 +13,22 @@ import java.util.Objects;
 public class Grid {
     private static final Symbol wild = new S1();
     private static final Symbol[] grid = new Symbol[15];
+    private static final ImageView[] displayGrid = new ImageView[15];
     private static Grid instance = null;
+
+    static {
+        for (int i = 0; i < 15; i++) {
+            displayGrid[i] = new ImageView();
+        }
+    }
+
+    public static ImageView[] getDisplayGrid() {
+        return displayGrid;
+    }
+
+    public static ImageView getDisplayGrid(int index) {
+        return displayGrid[index];
+    }
 
     public static Grid getInstance() {
         if (instance == null) {
@@ -23,6 +39,7 @@ public class Grid {
 
     public void setGridSymbol(int index, Symbol symbol) {
         grid[index] = symbol;
+        displayGrid[index].setImage(symbol.getImage());
     }
 
     public HashMap<Pattern, Symbol> getAllMatches() {

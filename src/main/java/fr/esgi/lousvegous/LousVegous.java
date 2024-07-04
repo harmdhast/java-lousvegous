@@ -7,21 +7,23 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
+import fr.esgi.lousvegous.grid.Grid;
+import fr.esgi.lousvegous.grid.GridView;
+import fr.esgi.lousvegous.intro.IntroScene;
 import fr.esgi.lousvegous.login.Login;
-import fr.esgi.lousvegous.login.LoginView;
 import fr.esgi.lousvegous.pattern.Pattern;
 import fr.esgi.lousvegous.player.Player;
 import fr.esgi.lousvegous.symbol.Symbol;
 import fr.esgi.lousvegous.symbol.SymbolManager;
-import fr.esgi.lousvegous.ui.intro.IntroScene;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,123 +35,40 @@ import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
-public class HelloApplication extends GameApplication {
+public class LousVegous extends GameApplication {
     ImageView[] displayGrid = new ImageView[15];
     Grid grid = Grid.getInstance();
     List<Animation<?>> animations = new ArrayList<>();
 
     public static void main(String[] args) {
-        //  SymbolManager symbolManager = new SymbolManager();
-
-        //  Random random = new Random();
-        //  for (int i = 0; i < 20; i++) {
-        //      System.out.print(random.getRandomSymbol().getImage());
-        //  }
-        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/LEMONMILK-Bold.otf"), 10);
-        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/Sunday Chillin.ttf"), 10);
-        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/LasVegasDemo.otf"), 10);
-        Font.loadFont(HelloApplication.class.getResourceAsStream("/fonts/CasinoShadow-Italic.ttf"), 10);
+        Font.loadFont(LousVegous.class.getResourceAsStream("/fonts/LEMONMILK-Bold.otf"), 10);
+        Font.loadFont(LousVegous.class.getResourceAsStream("/fonts/Sunday Chillin.ttf"), 10);
+        Font.loadFont(LousVegous.class.getResourceAsStream("/fonts/LasVegasDemo.otf"), 10);
+        Font.loadFont(LousVegous.class.getResourceAsStream("/fonts/CasinoShadow-Italic.ttf"), 10);
 
         launch(args);
     }
 
-//    @Override
-//    public void start(Stage stage) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("lousvegous.css")).toExternalForm());
-//        stage.setTitle("Hello!");
-//        stage.setScene(scene);
-//        stage.show();
-//    }
-
     @Override
     protected void initGame() {
-        // Create a rectangle background
+        // Set the background color of the game
         Background bg = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
         getGameScene().getRoot().setBackground(bg);
 
-        boolean debugLogin = false;
-        if (debugLogin) {
-            Login login = new Login();
+        // Create default player
+        Login.register("admin", "admin");
+        Player p = Login.login("admin", "admin");
+        Player.setCurrentPlayer(p);
 
-            login.login("test", "test");
-            login.register("admin", "admin");
-            Player admin = login.login("admin", "admin");
+        // Move to login screen
+        //LoginView.moveTo();
 
-            System.out.println(admin.getUsername());
-
-            getGameScene().getRoot().getChildren().add(LoginView.getView());
-            return;
-        }
-
-
-        // Create a new GridPane
-        GridPane playingGrid = new GridPane();
-        playingGrid.getStyleClass().add("playing-grid");
-        playingGrid.setGridLinesVisible(true);
-        playingGrid.setPrefSize(300, 500);
-        playingGrid.setPadding(new Insets(10, 10, 10, 10));
-        // set columns and rows to be the same size
-        // Center items in grid
-        playingGrid.setAlignment(javafx.geometry.Pos.CENTER);
-
-
-        // Define the size of the grid
-        int numColumns = 5;
-        int numRows = 3;
-
-        // Create the cells of the grid
-        int idx = 0;
-        for (int i = 0; i < numColumns; i++) {
-            for (int j = 0; j < numRows; j++) {
-                ImageView imageView = new ImageView();
-                //Image image = SymbolManager.getInstance().getRandomSymbol().getImage();
-                //imageView.setImage(image);
-                displayGrid[idx] = imageView;
-
-                // Add the rectangle (cell) to the grid
-                playingGrid.add(imageView, i, j);
-                idx++;
-            }
-        }
-
-        // Create button
-        Button button = new Button("SPIN");
-        button.setPrefWidth(100);
-        button.setPrefHeight(50);
-        button.setStyle("-fx-font-size: 20px;");
-        button.setOnAction(e -> spin(e));
-
-        // Create Vbox
-        VBox vbox = new VBox();
-        vbox.setPrefSize(800, 600);
-        vbox.setSnapToPixel(true);
-
-        // Create Hbox
-        HBox hbox = new HBox();
-        hbox.setAlignment(javafx.geometry.Pos.CENTER);
-        hbox.getChildren().add(playingGrid);
-        hbox.getChildren().add(button);
-
-        Text text = new Text("LousVegous");
-        text.setFont(Font.font("Casino Shadow", 100));
-        text.setFill(Color.YELLOW);
-
-
-        vbox.getChildren().addAll(text, hbox);
-        vbox.setAlignment(javafx.geometry.Pos.CENTER);
-        // center the grid
-        vbox.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        // Add the grid to the game's root (or another parent node)
-        getGameScene().getRoot().getChildren().add(vbox);
-
+        GridView.moveTo();
     }
 
     @Override
     protected void onUpdate(double tpf) {
-        animations.forEach(a -> a.onUpdate(tpf));
+        this.animations.forEach(a -> a.onUpdate(tpf));
     }
 
     public void spin(ActionEvent e) {
@@ -198,6 +117,7 @@ public class HelloApplication extends GameApplication {
         } else {
             animations.forEach(Animation::start);
             animations.getLast().setOnFinished(() -> {
+                System.out.println("Finished");
                 animations = new ArrayList<>();
                 replaceSymbols(toDestroy);
                 processLoop(button);
@@ -263,7 +183,7 @@ public class HelloApplication extends GameApplication {
     protected void initGameVars(Map<String, Object> vars) {
         vars.put("username", "");
         vars.put("last_login", LocalDateTime.now());
-        vars.put("balance", 0);
+        vars.put("balance", 0.0);
         vars.put("total_rolls", 0);
         vars.put("total_wins", 0);
         vars.put("best_win", 0);

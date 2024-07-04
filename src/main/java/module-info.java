@@ -19,6 +19,7 @@ open module fr.esgi.javalousvegous {
     exports fr.esgi.lousvegous.login;
     exports fr.esgi.lousvegous.player;
     exports fr.esgi.lousvegous.symbol.list;
+    exports fr.esgi.lousvegous.grid;
     //opens fr.esgi.lousvegous.symbol to javafx.fxml;
     //opens assets.textures;
 }

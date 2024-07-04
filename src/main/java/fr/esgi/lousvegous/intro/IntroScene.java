@@ -1,21 +1,8 @@
-package fr.esgi.lousvegous.ui.intro;
+package fr.esgi.lousvegous.intro;
 
 import com.almasb.fxgl.animation.Animation;
-import com.almasb.fxgl.animation.Interpolators;
 import com.almasb.fxgl.dsl.FXGL;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
+import javafx.scene.shape.Rectangle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

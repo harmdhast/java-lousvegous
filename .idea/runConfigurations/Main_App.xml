@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main App" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="fr.esgi.lousvegous.HelloApplication" />
+    <option name="MAIN_CLASS_NAME" value="fr.esgi.lousvegous.LousVegous" />
     <module name="java-lousvegous" />
     <method v="2">
       <option name="Make" enabled="true" />
