@@ -39,8 +39,18 @@ public class Pattern {
         return indexList;
     }
 
+    public static List<Integer> getIndexOfZeroes(String pattern) {
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) == '0') {
+                indexList.add(i);
+            }
+        }
+        return indexList;
+    }
+
     public static String decimalToBinary(int decimal) {
-        return Integer.toBinaryString(decimal);
+        return String.format("%15s", Integer.toBinaryString(decimal)).replace(' ', '0');
     }
 
     public int threeColumns() {
@@ -65,6 +75,16 @@ public class Pattern {
         List<Integer> indexList = new ArrayList<>();
         for (int i = 0; i < this.pattern.length() - 3 * mode; i++) {
             if (this.pattern.charAt(i) == '1') {
+                indexList.add(i);
+            }
+        }
+        return indexList;
+    }
+
+    public List<Integer> getIndexOfZeroes() {
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < this.pattern.length() - 3 * mode; i++) {
+            if (this.pattern.charAt(i) == '0') {
                 indexList.add(i);
             }
         }

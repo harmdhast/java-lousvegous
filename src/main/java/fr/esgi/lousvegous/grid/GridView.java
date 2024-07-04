@@ -14,9 +14,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -191,7 +193,7 @@ public class GridView {
             Grid.getInstance().setGridSymbol(3, SymbolManager.getInstance().getSymbols().get(1));
             Grid.getInstance().setGridSymbol(4, SymbolManager.getInstance().getSymbols().get(2));
             Grid.getInstance().setGridSymbol(5, SymbolManager.getInstance().getSymbols().get(8));
-            Grid.getInstance().setGridSymbol(6, SymbolManager.getInstance().getSymbols().get(1));
+            Grid.getInstance().setGridSymbol(6, SymbolManager.getInstance().getSymbols().get(5));
             Grid.getInstance().setGridSymbol(7, SymbolManager.getInstance().getSymbols().get(2));
             Grid.getInstance().setGridSymbol(8, SymbolManager.getInstance().getSymbols().get(8));
             Grid.getInstance().setGridSymbol(9, SymbolManager.getInstance().getSymbols().get(1));
@@ -205,18 +207,6 @@ public class GridView {
                 Grid.getInstance().setGridSymbol(i, SymbolManager.getInstance().getRandomSymbol());
             }
         }
-
-
-//        int i = 0;
-//        for (ImageView imageView : displayGrid) {
-//            // Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
-//            Symbol symbol = test[i];
-//            imageView.setImage(symbol.getImage());
-//            grid.setGridSymbol(idx, symbol);
-//            idx++;
-//            i++;
-//        }
-
 
         processLoop();
     }
@@ -242,8 +232,10 @@ public class GridView {
                 System.out.println("Finished");
                 LousVegous.animations = new ArrayList<>();
                 animations = LousVegous.animations;
-                replaceSymbols(toDestroy);
-                processLoop();
+                FXGL.getExecutor().schedule(() -> {
+                    replaceSymbols(toDestroy);
+                    // processLoop();
+                }, Duration.seconds(0.5));
             });
         }
     }
@@ -257,20 +249,142 @@ public class GridView {
             double finalDelay = delay;
             float mutliplier = pattern.getMultiplier(matches.get(pattern));
             pattern.getIndexOfOnes().forEach(i -> addAnimationToIndex(i, finalDelay, mutliplier));
-            delay += 1;
+            delay += 1.2;
         }
 
         return toDestroy;
     }
 
     private static void replaceSymbols(int toDestroy) {
-        System.out.println(toDestroy);
-        System.out.println(Pattern.decimalToBinary(toDestroy));
-        System.out.println(Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy)));
+//        System.out.println(toDestroy);
+//        System.out.println(Pattern.decimalToBinary(toDestroy));
+//        System.out.println(Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy)));
+
+        // Change imageview with an explosion
         Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy)).forEach(i -> {
-            Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
-            Grid.getInstance().setGridSymbol(i, symbol);
+            Grid.getInstance().setGridSymbol(i, SymbolManager.symbols.getLast());
+
+            // Fade out animation
+            Animation<?> fadeOut = FXGL.animationBuilder()
+                    .delay(Duration.seconds(0.2))
+                    .duration(Duration.seconds(1))
+                    .repeat(3)
+                    .fadeOut(Grid.getDisplayGrid(i))
+                    .build();
+
+            animations.add(fadeOut);
+            //Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+            //Grid.getInstance().setGridSymbol(i, symbol);
         });
+        animations.getLast().setOnFinished(() -> {
+            // Replace imageview with new symbol
+            LousVegous.animations = new ArrayList<>();
+            animations = LousVegous.animations;
+            cascadeSymbols(Pattern.decimalToBinary(toDestroy));
+//            Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy)).forEach(i -> {
+//                Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+//                Grid.getDisplayGrid(i).setOpacity(1.0);
+//                Grid.getInstance().setGridSymbol(i, symbol);
+//            });
+        });
+        animations.forEach(Animation::start);
+    }
+
+    private static int cascadeIndex(int index) {
+        int mod = (index % 3); // 2 = Bottom, 1 = Middle, 0 = Top
+
+        int count = 0;
+        if (mod == 2) {
+            return count;
+        }
+
+        for (int i = 2 - mod; i > 0; i--) {
+            if (Objects.equals(Grid.getSymbol(index + i).getId(), "bomb")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static void cascadeSymbols(String pattern) {
+        // Slide down every symbol that is not the bomb
+        System.out.println(Pattern.getIndexOfZeroes(pattern));
+
+        List<Integer> newIndexes = new ArrayList<>();
+
+        Pattern.getIndexOfZeroes(pattern).forEach(i -> {
+            // Slide down animation
+            int oldIndex = i;
+            int newIndex = cascadeIndex(i);
+
+            if (newIndex == 0) {
+                return;
+            }
+
+            newIndexes.add(i + newIndex);
+            Symbol symbol = Grid.getSymbol(i);
+            ImageView oldGrid = Grid.getDisplayGrid(i);
+            ImageView newGrid = Grid.getDisplayGrid(i + newIndex);
+            double oldX = oldGrid.getTranslateX();
+            double oldY = oldGrid.getTranslateY();
+
+
+            Animation<?> slideDown = FXGL.animationBuilder()
+                    .delay(Duration.seconds(0.2))
+                    .duration(Duration.seconds(0.5))
+                    .translate(oldGrid)
+                    .from(new Point2D(oldX, oldY))
+                    .to(new Point2D(oldX, oldY + (100 * newIndex)))
+                    .build();
+
+            animations.add(slideDown);
+            slideDown.setOnFinished(() -> {
+                //currentGrid.setOpacity(0.0);
+                newGrid.setOpacity(1.0);
+                Grid.getInstance().setGridSymbol(oldIndex + newIndex, symbol);
+
+                oldGrid.setTranslateX(oldX);
+                oldGrid.setTranslateY(oldY);
+                // oldGrid.setImage(SymbolManager.symbols.getLast().getImage());
+                // check if oldIndex in Pattern.getIndexOfOnes(Pattern.decimalToBinary(toDestroy))
+                if (!newIndexes.contains(oldIndex)) {
+                    Grid.getDisplayGrid(oldIndex).setOpacity(0.0);
+                    Grid.getInstance().setGridSymbol(oldIndex, SymbolManager.symbols.getLast());
+                }
+                List<Animation<?>> animations2 = new ArrayList<>(animations);
+                animations2.remove(slideDown);
+                animations = animations2;
+                if (animations.isEmpty()) {
+                    LousVegous.animations = new ArrayList<>();
+                    animations = LousVegous.animations;
+                    replaceBombs();
+                }
+                //Grid.getDisplayGrid(i).setTranslateY(Grid.getDisplayGrid(i).getTranslateY() + (100 * newIndex));
+                //Grid.getDisplayGrid(i).setOpacity(1.0);
+                //Grid.getInstance().setGridSymbol(i, Grid.getSymbol(i + newIndex));
+            });
+            //Grid.getDisplayGrid(newIndex).setOpacity(1.0);
+            //Grid.getInstance().setGridSymbol(newIndex, Grid.getSymbol(i));
+        });
+        animations.forEach(Animation::start);
+
+//        animations.getLast().setOnFinished(() -> {
+//            LousVegous.animations = new ArrayList<>();
+//            animations = LousVegous.animations;
+//            replaceBombs();
+//        });
+    }
+
+    private static void replaceBombs() {
+        // Replace bombs with random symbols
+        for (int i = 0; i < 15; i++) {
+            if (Objects.equals(Grid.getSymbol(i).getId(), "bomb")) {
+                Symbol symbol = SymbolManager.getInstance().getRandomSymbol();
+                Grid.getInstance().setGridSymbol(i, symbol);
+                Grid.getDisplayGrid(i).setOpacity(1.0);
+            }
+        }
+        processLoop();
     }
 
     private static void addAnimationToIndex(int index, double delay, float multiplier) {

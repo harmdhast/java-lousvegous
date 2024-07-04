@@ -33,6 +33,10 @@ public class Grid {
         return displayGrid[index];
     }
 
+    public static Symbol getSymbol(int index) {
+        return grid[index];
+    }
+
     public static Grid getInstance() {
         if (instance == null) {
             instance = new Grid();

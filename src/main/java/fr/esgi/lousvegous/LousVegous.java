@@ -5,13 +5,10 @@ import com.almasb.fxgl.app.CursorInfo;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.SceneFactory;
-import com.almasb.fxgl.dsl.FXGL;
 import fr.esgi.lousvegous.grid.Grid;
-import fr.esgi.lousvegous.grid.GridView;
 import fr.esgi.lousvegous.intro.IntroScene;
 import fr.esgi.lousvegous.login.Login;
 import fr.esgi.lousvegous.login.LoginView;
-import fr.esgi.lousvegous.player.Player;
 import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -48,17 +45,17 @@ public class LousVegous extends GameApplication {
         Background bg = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
         getGameScene().getRoot().setBackground(bg);
 
-        FXGL.loopBGM("bgm.mp3");
+        //FXGL.loopBGM("bgm.mp3");
 
         // Create default player
         Login.register("admin", "admin");
-        Player p = Login.login("admin", "admin");
-        Player.setCurrentPlayer(p);
+        // Player p = Login.login("admin", "admin");
+        //Player.setCurrentPlayer(p);
 
         // Move to login screen
         LoginView.moveTo();
 
-        GridView.moveTo();
+        // GridView.moveTo();
     }
 
     @Override
@@ -72,7 +69,7 @@ public class LousVegous extends GameApplication {
         gameSettings.setHeight(600);
         gameSettings.setTitle("LousVegous");
         gameSettings.setVersion("0.1");
-        gameSettings.setIntroEnabled(false);
+        gameSettings.setIntroEnabled(true);
         gameSettings.setDefaultCursor(new CursorInfo("dollar.gif", 0, 0));
         gameSettings.setSceneFactory(new SceneFactory() {
             @NotNull

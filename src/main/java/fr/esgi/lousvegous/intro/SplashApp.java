@@ -112,6 +112,7 @@ public class SplashApp implements Splash {
                 .onFinished(() -> {
                     FXGL.getAudioPlayer().stopAllSoundsAndMusic();
                     FXGL.getSettings().setGlobalMusicVolume(volume);
+                    FXGL.loopBGM("bgm.mp3");
                 })
                 .animate(FXGL.getSettings().globalMusicVolumeProperty())
                 .from(FXGL.getSettings().getGlobalMusicVolume())
