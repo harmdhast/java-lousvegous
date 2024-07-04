@@ -7,7 +7,7 @@ connexion, la gestion des joueurs et un jeu de correspondance de symboles avec a
 
 Avant de commencer, assurez-vous de répondre aux exigences suivantes :
 
-- Java JDK 11 ou supérieur installé
+- Java JDK 21 ou supérieur installé
 - Maven installé
 - IntelliJ IDEA ou tout autre IDE Java pour exécuter et modifier le projet
 
